@@ -19,7 +19,6 @@
         <th>Id</th>
         <th>Username</th>
         <th>Email</th>
-        <th>Password</th>
         <th>Update</th>
         <th>Delete</th>
         </tr>
@@ -43,7 +42,6 @@
         <td> <?php echo $res['id'];  ?> </td>
         <td> <?php echo $res['username'];  ?> </td>
         <td> <?php echo $res['email'];  ?> </td>
-        <td> <?php echo $res['password'];  ?> </td>
         <td><button class="btn-danger btn"><a href="delete.php?id=<?php echo $res['id'];  ?> " class="text-white">Delete</a></button></td>
         <td><button class="btn-primary btn"><a href="update.php?id=<?php echo $res['id'];  ?>" class="text-white">Update</a></button></td>
         </tr>

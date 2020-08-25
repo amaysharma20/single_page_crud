@@ -1,3 +1,50 @@
+<?php
+
+
+include 'conn.php';
+$update=0;
+$username="";
+$email="";
+$password="";
+if(isset($_REQUEST['edit'])){
+    $id = $_REQUEST['edit'];
+    $update = 1;
+    $loadquery = "SELECT * FROM `crudtable` WHERE id = $id";
+
+    $query =  mysqli_query($con,$loadquery);
+
+    if(count($query) == 1 ){
+        $res = mysqli_fetch_array($query);
+        $id = $res['id'];
+        $username = $res['username'];
+        $email = $res['email'];
+        $password = $res['password'];
+    }
+
+}
+
+if(isset($_REQUEST['update'])){
+    $id = $_REQUEST['edit'];
+    $username = $_REQUEST['username'];
+    $email = $_REQUEST['email'];
+    $password = $_REQUEST['password'];
+    $updatequery = "UPDATE `crudtable` SET `username`='$username',`email`='$email',`password`=`$password` WHERE id=$id";
+    $query =  mysqli_query($con,$updatequery);
+    header('location:insert.php');
+}
+
+if(isset($_POST['done'])){
+
+    $username= $_POST['username'];
+    $email= $_POST['email'];
+    $password= $_POST['password'];
+    $insertquery = "INSERT INTO `crudtable`(`username`, `email`,`password`) VALUES ('$username','$email','$password')";
+
+$query =  mysqli_query($con,$insertquery);
+    header('location:insert.php');
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +59,7 @@
 <body>
     <div class="col-lg-6 m-auto">
 
-<form method="POST">
+<form action="#" method="POST">
 
 <div class="card">
     <div class="card-header bg-dark">
@@ -20,40 +67,83 @@
     </div>
  
   <label> Username: </label>
- <input type="text" name="username" class="form-control"> <br>
+ <input type="text" name="username" class="form-control" value="<?php echo $username;  ?>"> <br>
 
  <label> Email: </label>
- <input type="email" name="email" class="form-control"> <br>
+ <input type="email" name="email" class="form-control" value="<?php echo $email;  ?>"> <br>
 
  <label> Password: </label>
- <input type="password" name="password" class="form-control"> <br>
+ <input type="password" name="password" class="form-control" value="<?php echo $password;  ?>"> <br>
 
- <button class="btn btn-success" type="Submit" name="done">Submit</button>
+<?php if($update > 0) { ?><button class="btn btn-success" type="Submit" name="update">Update</button><?php } elseif ($update == 0) {?> <button class="btn btn-success" type="submit" name="done">Submit</button><?php }?>
 
  </div>
 
- </form>
+
 
     </div>
-</body>
-</html>
-<?php
 
+<div class="container">
+<div class="col-lg-12">
+<h1 class="text-warning text-center">Display Table Data</h1>
+<table class="table table-striped table-hover tb">
+<tr class="text-white bg-dark text-center">
+<th>Id</th>
+<th>Username</th>
+<th>Email</th>
+<th>Delete</th>
+<th>Update</th>
+</tr>
+<?php
 
 include 'conn.php';
 
-if(isset($_POST['done'])){
 
-    $username= $_POST['username'];
-    $email= $_POST['email'];
-    $password= $_POST['password'];
-    $insertquery = "INSERT INTO `crudtable`(`username`, `email`, `password`) VALUES ('$username','$email','$password')";
+
+$insertquery = "SELECT * FROM `crudtable`";
 
 $query =  mysqli_query($con,$insertquery);
 
-}else{
-    echo 'Not Submit';
-}
+while($res = mysqli_fetch_array($query)){
 
 
 ?>
+
+<tr class="border border-dark text-center">
+<td> <?php echo $res['id'];  ?> </td>
+<td> <?php echo $res['username'];  ?> </td>
+<td> <?php echo $res['email'];  ?> </td>
+<td><button class="btn-danger btn"  class="text-white" type="button" onClick="deleteAjax(<?php echo $res['id']; ?>)">Delete</button></td>
+<td><button class="btn-primary btn" class="text-white" type="button" ><a href="insert.php?edit=<?php echo $res['id'];  ?>" class="text-white">Update</a></button></td>
+</tr>
+<?php
+}
+?>
+
+</table>
+</div>
+</form>
+<script type="text/javascript">
+function deleteAjax(id){
+
+if(confirm('Are you Sure')){
+
+$.ajax({
+    type:'post',
+    url:'delete.php',
+    data:{delete_id:id},
+    success:function(data){
+        console.log(JSON.parse(data));
+        location.reload();
+
+    }
+})
+
+}
+
+}
+</script>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</body>
+</html>

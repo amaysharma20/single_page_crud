@@ -2,12 +2,25 @@
 
 include 'conn.php';
 
-$id = $_GET['id'];
+$data=[];
+$id = $_POST['delete_id'];
 
 $q = " DELETE FROM `crudtable` WHERE id = $id ";
+$b= mysqli_query($con,$q);
+//  if(mysqli_query($con,$q)){
+//      $data['status']=1;
+//  }else{
+//      $data['status']=0;
+//  }
 
-mysqli_query($con,$q);
+echo mysqli_affected_rows($con);
+if($b == 1){
+    $data['status']='true';
+}else{
+    $data['status']='false';
+}
 
-header('location:display.php');
+echo json_encode($data);
+// header('location:insert.php');
 
 ?>

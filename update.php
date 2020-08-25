@@ -7,14 +7,20 @@ if(isset($_POST['done'])){
     $id= $_GET['id'];
     $username= $_POST['username'];
     $email= $_POST['email'];
-    $password= $_POST['password'];
-    $updatequery = "UPDATE `crudtable` SET `id`=$id,`username`='$username',`email`='$email',`password`='$password' WHERE id=$id";
+    $updatequery = "UPDATE `crudtable` SET `id`=$id,`username`='$username',`email`='$email' WHERE id=$id";
 
 $query =  mysqli_query($con,$updatequery);
 
-header('location:display.php');
+header('location:insert.php');
 
 }
+    $id= $_GET['id'];
+    $loadquery = "SELECT * FROM `crudtable` WHERE id = $id";
+
+    $query =  mysqli_query($con,$loadquery);
+
+$res = mysqli_fetch_array($query);
+
 
 ?>
 <!DOCTYPE html>
@@ -39,13 +45,11 @@ header('location:display.php');
     </div>
  
   <label> Username: </label>
- <input type="text" name="username" class="form-control"> <br>
+ <input type="text" name="username" class="form-control" value="<?php echo $res['username'];  ?>"> <br>
 
  <label> Email: </label>
- <input type="email" name="email" class="form-control"> <br>
+ <input type="email" name="email" class="form-control" value="<?php echo $res['email'];  ?>"><br>
 
- <label> Password: </label>
- <input type="password" name="password" class="form-control"> <br>
 
  <button class="btn btn-success" type="Submit" name="done">Submit</button>
 
